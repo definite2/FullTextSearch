@@ -30,9 +30,10 @@ namespace ElasticsearchTika
             searchResult.Items = items.ToArray();
             return searchResult;
         }
+        //source filtering exclude kullanıldı, search response'undan body çıkarıldı. hızlı return olması için
         void SearchFuzzy(string query, IList<SearchResultItem> items)
         {
-            var response = es.Search<Files>(s => s
+            var response = es.Search<Files>(s => s.Source(sf=>sf.Excludes(e=>e.Fields(f=>f.Body)))
                 .From(0)
                 .Size(10)
                 .Query(q => q
@@ -43,10 +44,10 @@ namespace ElasticsearchTika
 
             if (response.Documents.Count > 0)
             {
-                // If we had hits, push them to the console
+                
                 foreach (var hit in response.Hits)
                 {
-                    Console.WriteLine("FILE: " + hit.Source.Title);
+                    //Console.WriteLine("FILE: " + hit.Source.Title);
 
                     foreach (var highlight in hit.Highlight)
                     {

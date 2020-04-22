@@ -25,7 +25,7 @@ namespace ElasticsearchTika
 
             var client = es.elastic();
 
-            var only_these_extensions = new[] { ".pdf", ".rtf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".csv" };
+            var only_these_extensions = new[] { ".pdf", ".rtf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".csv","png","jpg" };
 
             client.Indices.Create(_IndexName, c => c.Index(_IndexName).Map<Files>(t => t.AutoMap()));
             //client.Indices.Create(_IndexName, c => c.Map<File>(t => t.AutoMap()));
