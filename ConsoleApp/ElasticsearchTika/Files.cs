@@ -12,7 +12,8 @@ namespace ElasticsearchTika
         public long ContentLength { get; set; }
         public string FilePath { get; set; }
         public DateTime CreatedDate { get; set; }
-        public DateTime ModifiedDate { get; set; }
+             public DateTime ModifiedDate { get; set; }
+
 
     }
 
