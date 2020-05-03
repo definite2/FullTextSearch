@@ -9,6 +9,9 @@ using Elasticsearch.Net;
 using TikaOnDotNet.TextExtraction;
 using System.IO;
 
+using org.apache.tika.io;
+using org.apache.commons.io.output;
+
 namespace ElasticsearchTika
 {
     public class Tika
@@ -26,7 +29,8 @@ namespace ElasticsearchTika
                 Body = result.Text,
                 FilePath = Path.GetDirectoryName(file),
                 CreatedDate = File.GetCreationTime(file),
-                ModifiedDate = File.GetLastWriteTime(file)                
+                ModifiedDate = File.GetLastWriteTime(file)  
+                
                
             };
             if (result.Metadata.ContainsKey("title"))

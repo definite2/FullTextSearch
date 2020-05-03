@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 using TikaOnDotNet.TextExtraction;
 using Nest;
+//using java.io;
+using org.apache.tika.io;
+using org.apache.commons.io.output;
 
 namespace ElasticsearchTika
 {
@@ -13,14 +16,14 @@ namespace ElasticsearchTika
     {
         static void Main(string[] args)
         {
-            string rootPath = @"C:\Users\defne.eroglu\Documents\ElasticsearchPoC";
+            string rootPath = @"E:\ElasticsearchPoC";
             string[] dirs = Directory.GetDirectories(rootPath);
 
             string[] files = Directory.GetFiles(rootPath, "*", SearchOption.AllDirectories);
             Tika tika = new Tika();
             tika._cut = new TextExtractor();
             ESClient es = new ESClient();
-            string _IndexName = "comp_assignments";
+            string _IndexName = "may_kivrik";
             es.indexName = _IndexName;
 
             var client = es.elastic();
@@ -42,16 +45,20 @@ namespace ElasticsearchTika
                         var test = tika.tika_metadata();
                         var indexresult = client.IndexDocument<Files>(test);
                         Console.WriteLine(indexresult.Id);
+                       //java.lang.System.setErr(new PrintStream(indexresult.Id));
+                      
                     }
                     catch (Exception e)
                     {
 
                         Console.WriteLine(e.Message);
+                        //java.lang.System.setErr(new PrintStream(e.Message));
                         continue;
                     }
                 }
             }
             Console.ReadLine();
+            //Console.ReadLine();
         }
     }
 

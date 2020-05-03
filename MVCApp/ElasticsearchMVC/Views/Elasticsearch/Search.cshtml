@@ -1,0 +1,201 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Search</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+    <!-- DevExtreme dependencies -->
+    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.1.0.min.js"></script>
+    <!-- DevExtreme themes -->
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/17.2.6/css/dx.common.css" />
+
+    <link rel="dx-theme" data-theme="generic.dark" href="https://cdn3.devexpress.com/jslib/17.2.6/css/dx.dark.css" data-active="false" />
+    <!-- A DevExtreme library -->
+    <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/17.2.6/js/dx.all.js"></script>
+
+    <style>
+        #gridContainer {
+            height: 440px;
+        }
+    </style>
+
+
+    <script>
+        $(document).ready(function () {
+
+            $("#btnsubmit").on("click", function () {
+
+                if ($("#txtsearch").val() === "" ){
+                    alert("Provide Details to Search !");
+                }
+                else {
+
+                    var obj = {};
+                    obj.search = $.trim($("#txtsearch").val());
+                    //obj.nationalIDNumber = $.trim($("#txtnationalIDNumber").val());
+
+                    var apiUrl = "@Url.Action("FileSearch", "Elasticsearch")";
+
+                    $.ajax({
+                        type: "GET",
+                        contentType: 'application/json',
+                        url: apiUrl,
+                        dataType: "json",
+                        data: JSON.stringify(obj),
+                        crossDomain: true,
+                        success: function (data) {
+                            var response = data;
+
+                            if (data.datasend.length <= 0) {
+                                alert("No Data Found!!");
+                            } else {
+
+                                var timetook = data.Took;
+                                $('div.total-title').text(timetook + " millisecond");
+
+                                $("#gridContainer").dxDataGrid({
+                                    dataSource: data.datasend,
+                                    showColumnLines: false,
+                                    showRowLines: true,
+                                    rowAlternationEnabled: true,
+                                    showBorders: true,
+                                    paging: {
+                                        pageSize: 50
+                                    },
+                                    scrolling: {
+                                        mode: "infinite" // or "virtual" | "infinite"
+                                    },
+                                    pager: {
+                                        showPageSizeSelector: false,
+                                        allowedPageSizes: [5, 10, 20],
+                                        showInfo: true
+                                    },
+                                    columns: [
+                                        {
+                                            caption: "Search here",
+                                            width: 350,
+                                            fixed: true,
+                                            dataField: "FileName"
+                                        },
+                                          "FilePath",
+                                          "Author",
+                                          "Keywords",                                        
+                                          "CreatedDate",
+                                         
+                                         
+                                    ]
+                                });
+
+                            }
+                        },
+                        error: function (xhr, err) {
+                            alert("readyState: " + xhr.readyState + "\nstatus: " + xhr.status);
+                            alert("responseText: " + xhr.responseText);
+                        }
+
+                    });
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+</head>
+<body>
+    <div class="panel panel-primary">
+        <div class="panel-heading">Search</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    Files
+                    <input id="txtsearch" onblur="return checkTextFields(this);" onkeypress="return isAlphaKey(event)" class="form-control" type="text" />
+                </div>
+                
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <br />
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-8">
+                    <input id="btnsubmit" class="btn btn-info" type="button" value="Search" />
+                    <a href="/Elasticsearch/Search" class="btn btn-warning">Clear</a>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="alert alert-warning">
+                        Time Took - <span class="badge">
+                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                            <div class="total-title" id="timetook"></div>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Output</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="gridContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    function checkTextFields(ctrl) {
+
+        var str = ctrl.value;
+        var isnot = "!@@#$%^&*+=|\~`?><':;{[}]_";
+        var inval = 0;
+        var x;
+        for (var i = 0; i < str.length; i++) {
+            for (x = 0; x < isnot.length; x++) {
+                if (str.charAt(i) === (isnot.charAt(x))) {
+                    inval = 1;
+
+                    ctrl.value = str.substring(0, str.indexOf(str.charAt(i)));
+                    ctrl.value = "";
+                    ctrl.focus();
+                }
+            }
+        }
+
+        if (inval === 1) {
+            alert("only alphabets,numbers  and {.,/()-} space allowed");
+        }
+
+        return (inval);
+    }
+
+    function isAlphaKey(evt) {
+
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57) || charCode === 8)
+            return true;
+
+        return false;
+    }
+}
+</script>

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - ASP.NET Uygulamam</title>
+    <title>@ViewBag.Title - PoC Elasticsearch MVC App</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -24,6 +24,9 @@
                     <li>@Html.ActionLink("Giriş Sayfası", "Index", "Home")</li>
                     <li>@Html.ActionLink("Hakkında", "About", "Home")</li>
                     <li>@Html.ActionLink("Kişi", "Contact", "Home")</li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Elasticsearch" asp-action="Index">Search</a>
+                    </li>
                 </ul>
             </div>
         </div>
